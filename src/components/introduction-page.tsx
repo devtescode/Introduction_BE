@@ -1,7 +1,10 @@
 import heroImage from "../assets/nikkah-hero.jpg";
+import brideImage from "../assets/bride.jpg";
 import { useEffect, useMemo, useState } from "react";
+import { Product } from "@/lib/types";
 
 import { getIntroductionImages, type IntroductionImage } from "../lib/introduction-storage";
+import { Loader2 } from "lucide-react";
 
 const couple = [
   {
@@ -55,7 +58,7 @@ export function IntroductionPage() {
       <CoupleSection images={images} />
       <EventSection />
       <GallerySection images={images} />
-      <ResponseSection />
+      {/* <ResponseSection /> */}
     </main>
   );
 }
@@ -113,6 +116,8 @@ function CoupleSection({ images }: { images: IntroductionImage[] }) {
     [images],
   );
 
+
+
   return (
     <section id="couple" className="px-5 py-20 sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
@@ -132,11 +137,11 @@ function CoupleSection({ images }: { images: IntroductionImage[] }) {
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <div className="flex aspect-[3/4] w-full max-w-[250px] items-center justify-center border border-veil-foreground/50 bg-background/20 font-display text-7xl text-veil-foreground backdrop-blur-md">
-                      {person.initials}
-                    </div>
-                  </div>
+                  <img
+                    src={person.role === "Groom" ? heroImage : brideImage}
+                    alt={`${person.name} ${person.role.toLowerCase()} portrait`}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
                 )}
                 <figcaption className="absolute bottom-8 left-8 bg-background/85 px-4 py-3 font-semibold text-foreground backdrop-blur-sm">
                   {person.role} photo
@@ -216,9 +221,9 @@ function EventSection() {
           >
             Navigate from my current location
           </button>
-          <a className="mt-3 inline-flex w-full items-center justify-center border border-border bg-background px-5 py-3 text-center font-semibold text-foreground transition hover:bg-secondary" href={fallbackMapUrl} target="_blank" rel="noreferrer">
+          {/* <a className="mt-3 inline-flex w-full items-center justify-center border border-border bg-background px-5 py-3 text-center font-semibold text-foreground transition hover:bg-secondary" href={fallbackMapUrl} target="_blank" rel="noreferrer">
             Open location without Google
-          </a>
+          </a> */}
         </div>
       </div>
       <div className="mx-auto mt-8 max-w-7xl overflow-hidden border border-border bg-card shadow-ceremony">
@@ -234,58 +239,127 @@ function EventSection() {
 }
 
 function GallerySection({ images }: { images: IntroductionImage[] }) {
+  // const uploadedGallery = images.filter((image) => image.slot === "gallery");
   const uploadedGallery = images.filter((image) => image.slot === "gallery");
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+
+        const res = await fetch("https://bridal-be.onrender.com/products/getallproducts");
+        const data = await res.json();
+
+        const formatted = Array.isArray(data)
+          ? data.map((p: any) => ({
+            ...p,
+            id: p._id,
+          }))
+          : [];
+
+        console.log("BACKEND DATA:", formatted); // ✅ DEBUG (important)
+
+        setProducts(formatted);
+      } catch (err) {
+        console.log("FETCH ERROR:", err);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <section id="gallery" className="px-5 py-20 sm:px-8 lg:px-12">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <p className="text-sm font-semibold uppercase text-primary">Gallery</p>
-            <h2 className="mt-3 text-5xl font-semibold">Ceremony gallery</h2>
-          </div>
-          <p className="max-w-md text-muted-foreground">Bride, groom, family, and ceremony images can be placed here in a clean editorial grid.</p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {uploadedGallery.map((image, index) => (
-            <figure key={image.id} className="group aspect-[4/3] overflow-hidden border border-border bg-card">
-              <img src={image.src} alt={image.label} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-              <figcaption className="-mt-16 ml-5 inline-flex bg-background/85 px-4 py-3 font-semibold backdrop-blur-sm">
-                {String(index + 1).padStart(2, "0")} · {image.label}
-              </figcaption>
-            </figure>
-          ))}
-          {gallery.slice(uploadedGallery.length).map((item, index) => (
-            <figure key={item} className="group aspect-[4/3] overflow-hidden border border-border bg-card">
-              <div className="flex h-full items-end bg-gradient-to-br from-primary via-surface to-gold p-5 transition duration-500 group-hover:scale-105">
-                <figcaption className="bg-background/85 px-4 py-3 font-semibold backdrop-blur-sm">
-                  {String(uploadedGallery.length + index + 1).padStart(2, "0")} · {item}
-                </figcaption>
-              </div>
-            </figure>
-          ))}
+  <div className="mx-auto max-w-7xl">
+
+    {/* Header */}
+    <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+      <div>
+        <p className="text-sm font-semibold uppercase text-primary">
+          Gallery
+        </p>
+        <h2 className="mt-3 text-5xl font-semibold">
+          Ceremony gallery
+        </h2>
+      </div>
+
+      <p className="max-w-md text-muted-foreground">
+        Bride, groom, family, and ceremony images can be placed here in a clean editorial grid.
+      </p>
+    </div>
+
+    {/* CONTENT AREA */}
+    {loading ? (
+      // ✅ PERFECT CENTER LOADER
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="animate-spin text-gold" size={50} />
+          <p className="text-muted-foreground text-sm">
+            Loading collection...
+          </p>
         </div>
       </div>
-    </section>
+
+    ) : products.length === 0 ? (
+      // ✅ EMPTY STATE
+      <div className="flex items-center justify-center min-h-[300px]">
+        <p className="text-muted-foreground text-center">
+          No images available
+        </p>
+      </div>
+
+    ) : (
+      // ✅ SINGLE GRID (no nesting issues)
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+
+        {products.map((product, i) => (
+          <figure
+            key={product._id}
+            className="group relative overflow-hidden rounded-xl border border-border bg-card shadow-sm"
+          >
+            <div className="aspect-[4/3] overflow-hidden">
+              <img
+                src={product.imageURL}
+                alt={product.name || "Gallery image"}
+                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+              />
+            </div>
+
+            <figcaption className="absolute bottom-3 left-3 bg-background/80 px-3 py-2 text-sm font-medium backdrop-blur-md rounded-md">
+              {String(i + 1).padStart(2, "0")} · {product.name || "Image"}
+            </figcaption>
+          </figure>
+        ))}
+
+      </div>
+    )}
+  </div>
+</section>
   );
 }
 
-function ResponseSection() {
-  return (
-    <section className="bg-primary px-5 py-20 text-primary-foreground sm:px-8 lg:px-12">
-      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
-        <div>
-          <p className="text-sm font-semibold uppercase text-gold">Guest response</p>
-          <h2 className="mt-3 text-balance text-5xl font-semibold">A refined invitation response area for invited guests.</h2>
-        </div>
-        <form className="grid gap-4 border border-primary-foreground/20 bg-primary-foreground/8 p-5 backdrop-blur-sm sm:p-7" onSubmit={(event) => event.preventDefault()}>
-          <input className="border border-primary-foreground/25 bg-background/95 px-4 py-3 text-foreground outline-none ring-ring transition focus:ring-2" placeholder="Guest name" />
-          <input className="border border-primary-foreground/25 bg-background/95 px-4 py-3 text-foreground outline-none ring-ring transition focus:ring-2" placeholder="Phone number" />
-          <button className="bg-gold px-5 py-4 font-semibold text-gold-foreground transition hover:-translate-y-0.5 hover:bg-accent focus:outline-none focus:ring-2 focus:ring-ring" type="submit">
-            Submit response preview
-          </button>
-        </form>
-      </div>
-    </section>
-  );
-}
+// function ResponseSection() {
+//   return (
+//     <section className="bg-primary px-5 py-20 text-primary-foreground sm:px-8 lg:px-12">
+//       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+//         <div>
+//           <p className="text-sm font-semibold uppercase text-gold">Guest response</p>
+//           <h2 className="mt-3 text-balance text-5xl font-semibold">A refined invitation response area for invited guests.</h2>
+//         </div>
+//         <form className="grid gap-4 border border-primary-foreground/20 bg-primary-foreground/8 p-5 backdrop-blur-sm sm:p-7" onSubmit={(event) => event.preventDefault()}>
+//           <input className="border border-primary-foreground/25 bg-background/95 px-4 py-3 text-foreground outline-none ring-ring transition focus:ring-2" placeholder="Guest name" />
+//           <input className="border border-primary-foreground/25 bg-background/95 px-4 py-3 text-foreground outline-none ring-ring transition focus:ring-2" placeholder="Phone number" />
+//           <button className="bg-gold px-5 py-4 font-semibold text-gold-foreground transition hover:-translate-y-0.5 hover:bg-accent focus:outline-none focus:ring-2 focus:ring-ring" type="submit">
+//             Submit response preview
+//           </button>
+//         </form>
+//       </div>
+//     </section>
+//   );
+// }
