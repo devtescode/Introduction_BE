@@ -153,7 +153,7 @@ function LoginPanel({ onLogin }: { onLogin: () => void }) {
 
 
   return (
-  <section className="grid min-h-[70vh] items-center gap-5 px-0 py-10 lg:grid-cols-[0.92fr_1.08fr] lg:px-0">
+  <section className="grid min-h-[70vh] items-center gap-5 px-0 py-0 lg:grid-cols-[0.92fr_1.08fr] lg:px-0">
 
   {/* LEFT TEXT SECTION */}
   <div className="text-center lg:text-left">
