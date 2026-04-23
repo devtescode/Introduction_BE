@@ -120,13 +120,13 @@ function CoupleSection({ images }: { images: IntroductionImage[] }) {
 
 
   return (
-    <section id="couple" className="px-5 py-20 sm:px-8 lg:px-12">
+    <section id="couple" className="px-5 py-8 sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 max-w-3xl">
           <p className="text-sm font-semibold uppercase text-primary">The couple</p>
           <h2 className="mt-3 text-balance text-5xl font-semibold">Portrait-led profiles for the bride and groom.</h2>
         </div>
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-2 lg:grid-cols-2">
           {couple.map((person) => (
             <article key={person.role} className="grid overflow-hidden border border-border bg-card shadow-ceremony sm:grid-cols-[0.95fr_1.05fr]">
               <figure className="relative min-h-[360px] overflow-hidden bg-gradient-to-br from-primary via-surface to-gold p-5">
@@ -252,7 +252,7 @@ function EventSection() {
   }
 
   return (
-    <section id="event" className="bg-surface px-5 py-20 text-surface-foreground sm:px-8 lg:px-12">
+    <section id="event" className="bg-surface px-5 py-5 text-surface-foreground sm:px-8 lg:px-12">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
           <p className="text-sm font-semibold uppercase text-primary">Event details</p>
