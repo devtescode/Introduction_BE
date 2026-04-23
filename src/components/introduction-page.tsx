@@ -81,7 +81,8 @@ function HeroSection() {
           <a className="transition hover:text-gold" href="#event">Event</a>
           <a className="transition hover:text-gold" href="#location">Location</a>
           <a className="transition hover:text-gold" href="#gallery">Gallery</a>
-          <a className="border border-veil-foreground/30 px-3 py-2 transition hover:border-gold hover:text-gold" href="/admin">Admin</a>
+          <a className="rounded-full border border-veil-foreground/30 bg-background/70 px-4 py-2 text-sm font-semibold transition duration-300 hover:border-gold hover:bg-gold/10 hover:text-gold" href="/admin">Admin</a>
+             
         </div>
       </nav>
       <div className="relative z-10 mx-auto flex min-h-[76vh] max-w-7xl items-end pb-8 pt-20 text-veil-foreground">
