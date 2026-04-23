@@ -5,6 +5,7 @@ import { Product } from "@/lib/types";
 
 import { getIntroductionImages, type IntroductionImage } from "../lib/introduction-storage";
 import { Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const couple = [
   {
@@ -64,6 +65,8 @@ export function IntroductionPage() {
 }
 
 function HeroSection() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <section className="relative min-h-[92vh] px-5 py-5 sm:px-8 lg:px-12">
       <img
@@ -75,20 +78,73 @@ function HeroSection() {
       />
       <div className="absolute inset-0 bg-veil" />
       <nav className="relative z-10 mx-auto flex max-w-7xl items-center justify-between border-b border-veil-foreground/20 pb-5 text-veil-foreground">
-        <span className="font-display text-2xl font-semibold">T & R</span>
+        <span className="font-display text-2xl font-semibold tracking-tight">T & R</span>
         <div className="hidden items-center gap-7 text-sm sm:flex">
           <a className="transition hover:text-gold" href="#couple">Couple</a>
           <a className="transition hover:text-gold" href="#event">Event</a>
           <a className="transition hover:text-gold" href="#location">Location</a>
           <a className="transition hover:text-gold" href="#gallery">Gallery</a>
-          <a className="rounded-full border border-veil-foreground/30 bg-background/70 px-4 py-2 text-sm font-semibold transition duration-300 hover:border-gold hover:bg-gold/10 hover:text-gold" href="/admin">Admin</a>
-
+          <Link
+            to="/admin"
+            className="rounded-full border border-veil-foreground/30 bg-background/70 px-4 py-2 text-sm font-semibold transition duration-300 hover:border-gold hover:bg-gold/10 hover:text-gold"
+          >
+            Admin
+          </Link>
         </div>
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="sm:hidden flex h-11 w-11 items-center justify-center rounded-full border border-veil-foreground/30 bg-background/80 text-veil-foreground shadow-sm transition hover:border-gold hover:text-gold"
+          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+        >
+          <span className={`block h-0.5 w-6 bg-veil-foreground transition-all duration-300 ${mobileMenuOpen ? "rotate-45 translate-y-1.5" : ""}`}></span>
+          <span className={`block h-0.5 w-6 bg-veil-foreground transition-all duration-300 ${mobileMenuOpen ? "opacity-0" : ""}`}></span>
+          <span className={`block h-0.5 w-6 bg-veil-foreground transition-all duration-300 ${mobileMenuOpen ? "-rotate-45 -translate-y-1.5" : ""}`}></span>
+        </button>
       </nav>
+      <div
+        className={`sm:hidden absolute top-20 right-5 z-20 w-[min(92vw,18rem)] rounded-[28px] border border-veil-foreground/20 bg-background/95 p-4 shadow-2xl shadow-black/20 backdrop-blur-xl transition-all duration-300 ease-out ${mobileMenuOpen ? "opacity-100 scale-100 visible" : "pointer-events-none opacity-0 scale-95 invisible"}`}
+      >
+        <p className="mb-3 text-xs uppercase tracking-[0.28em] text-muted-foreground">Jump to</p>
+        <a
+          className="block rounded-2xl px-4 py-3 text-base font-semibold text-foreground transition hover:bg-gold/10 hover:text-gold"
+          href="#couple"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          Couple
+        </a>
+        <a
+          className="mt-2 block rounded-2xl px-4 py-3 text-base font-semibold text-foreground transition hover:bg-gold/10 hover:text-gold"
+          href="#event"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          Event
+        </a>
+        <a
+          className="mt-2 block rounded-2xl px-4 py-3 text-base font-semibold text-foreground transition hover:bg-gold/10 hover:text-gold"
+          href="#location"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          Location
+        </a>
+        <a
+          className="mt-2 block rounded-2xl px-4 py-3 text-base font-semibold text-foreground transition hover:bg-gold/10 hover:text-gold"
+          href="#gallery"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          Gallery
+        </a>
+        <Link
+          className="mt-3 flex items-center justify-center rounded-full border border-veil-foreground/20 bg-background px-4 py-3 text-base font-semibold uppercase tracking-[0.2em] text-foreground transition hover:border-gold hover:bg-gold/10 hover:text-gold"
+          to="/admin"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          Admin
+        </Link>
+      </div>
       <div className="relative z-10 mx-auto flex min-h-[76vh] max-w-7xl items-end pb-8 pt-20 text-veil-foreground">
         <div className="max-w-5xl">
-          <p className="mb-4 inline-flex border border-veil-foreground/30 px-4 py-2 text-sm uppercase tracking-normal text-gold">
-            10 May 2026 · Ibadan
+          <p className="mb-4 inline-flex border border-veil-foreground/20 px-4 py-2 text-sm uppercase tracking-normal text-white">
+            10 May 2026 · <strong>Ibadan</strong>
           </p>
           <h1 className="text-balance text-5xl font-semibold leading-[0.94] sm:text-7xl lg:text-8xl">
             Introduction Ceremony
@@ -432,3 +488,4 @@ function GallerySection({ images }: { images: IntroductionImage[] }) {
 //     </section>
 //   );
 // }
+//Tescode
