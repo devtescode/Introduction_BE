@@ -153,80 +153,93 @@ function LoginPanel({ onLogin }: { onLogin: () => void }) {
 
 
   return (
-    <section className="grid min-h-[70vh] items-center gap-8 lg:grid-cols-[0.92fr_1.08fr]">
-      <div>
-        <p className="text-sm font-semibold uppercase text-primary">Admin login</p>
-        <h1 className="mt-3 max-w-3xl text-balance text-6xl font-semibold leading-none sm:text-7xl">
-          Control the Introduction visuals from one elegant desk.
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-          Upload bride, groom, and gallery photographs, then return to the landing page to see them displayed instantly.
-        </p>
+  <section className="grid min-h-[70vh] items-center gap-5 px-0 py-10 lg:grid-cols-[0.92fr_1.08fr] lg:px-0">
+
+  {/* LEFT TEXT SECTION */}
+  <div className="text-center lg:text-left">
+    <p className="text-xs sm:text-sm font-semibold uppercase text-primary">
+      Admin login
+    </p>
+
+    <h1 className="mt-3 text-balance text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-semibold leading-tight lg:leading-none">
+      Control the Introduction visuals from one elegant desk.
+    </h1>
+
+    <p className="mt-5 sm:mt-6 max-w-2xl mx-auto lg:mx-0 text-base sm:text-lg leading-7 sm:leading-8 text-muted-foreground">
+      Upload bride, groom, and gallery photographs, then return to the landing page to see them displayed instantly.
+    </p>
+  </div>
+
+  {/* FORM SECTION */}
+  <form
+    onSubmit={handleSubmit}
+    className="border border-border bg-card p-5 sm:p-6 lg:p-8 shadow-ceremony w-full max-w-md mx-auto lg:max-w-none"
+  >
+    {/* HEADER */}
+    <div className="text-center mb-8">
+      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-secondary flex items-center justify-center mx-auto mb-4">
+        <Lock className="text-gold" size={26} />
       </div>
-      <form onSubmit={handleSubmit} className="border border-border bg-card p-6 shadow-ceremony sm:p-8">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mx-auto mb-4">
-            <Lock className="text-gold" size={28} />
-          </div>
 
-          <h1 className="font-display text-3xl font-bold text-foreground">
-            {adminExists ? "Admin Login" : "Create Admin"}
-          </h1>
+      <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
+        {adminExists ? "Admin Login" : "Create Admin"}
+      </h1>
 
-          <p className="text-muted-foreground text-sm mt-2">
-            {adminExists
-              ? "Sign in with your admin credentials"
-              : "Create first admin account"}
-          </p>
-        </div>
+      <p className="text-muted-foreground text-xs sm:text-sm mt-2">
+        {adminExists
+          ? "Sign in with your admin credentials"
+          : "Create first admin account"}
+      </p>
+    </div>
 
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            Email
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-gold focus:border-transparent outline-none transition"
-            placeholder="admin@introduction.com"
-          />
-        </div>
+    {/* EMAIL */}
+    <div className="mb-5">
+      <label className="block text-sm font-medium text-foreground mb-2">
+        Email
+      </label>
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-gold focus:border-transparent outline-none transition text-sm sm:text-base"
+        placeholder="admin@introduction.com"
+      />
+    </div>
 
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            Password
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-gold focus:border-transparent outline-none transition"
-            placeholder="••••••••"
-          />
-        </div>
+    {/* PASSWORD */}
+    <div className="mb-5">
+      <label className="block text-sm font-medium text-foreground mb-2">
+        Password
+      </label>
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+        className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-gold focus:border-transparent outline-none transition text-sm sm:text-base"
+        placeholder="••••••••"
+      />
+    </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-8 py-2 rounded-full bg-foreground text-background font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 mt-5 mx-auto block"
-        >
-          {loading
-            ? "Processing..."
-            : adminExists
-              ? "Sign In"
-              : "Create Admin"}
-        </button>
+    {/* BUTTON */}
+    <button
+      type="submit"
+      disabled={loading}
+      className="w-full sm:w-auto px-8 py-3 rounded-full bg-foreground text-background font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 mt-5 mx-auto block text-sm sm:text-base"
+    >
+      {loading ? "Processing..." : adminExists ? "Sign In" : "Create Admin"}
+    </button>
 
-        <p className="text-xs text-muted-foreground text-center mt-5">
-          {adminExists
-            ? "Login with your admin credentials"
-            : "This will be your only admin account"}
-        </p>
-      </form>
-    </section>
+    {/* FOOTER TEXT */}
+    <p className="text-xs text-muted-foreground text-center mt-5">
+      {adminExists
+        ? "Login with your admin credentials"
+        : "This will be your only admin account"}
+    </p>
+  </form>
+
+</section>
   );
 }
 
