@@ -82,7 +82,7 @@ function HeroSection() {
           <a className="transition hover:text-gold" href="#location">Location</a>
           <a className="transition hover:text-gold" href="#gallery">Gallery</a>
           <a className="rounded-full border border-veil-foreground/30 bg-background/70 px-4 py-2 text-sm font-semibold transition duration-300 hover:border-gold hover:bg-gold/10 hover:text-gold" href="/admin">Admin</a>
-             
+
         </div>
       </nav>
       <div className="relative z-10 mx-auto flex min-h-[76vh] max-w-7xl items-end pb-8 pt-20 text-veil-foreground">
@@ -161,6 +161,71 @@ function CoupleSection({ images }: { images: IntroductionImage[] }) {
   );
 }
 
+function MapWithDirections({ destination }: { destination: string }) {
+  const [mapUrl, setMapUrl] = useState("");
+  const destinationLat = 7.415;
+  const destinationLng = 3.93;
+
+  useEffect(() => {
+    // Use OpenStreetMap which doesn't require API keys
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          // Create a URL that shows both user location and destination
+          const userLat = coords.latitude;
+          const userLng = coords.longitude;
+          const bbox = `${Math.min(userLng, destinationLng) - 0.05}%2C${Math.min(userLat, destinationLat) - 0.05}%2C${Math.max(userLng, destinationLng) + 0.05}%2C${Math.max(userLat, destinationLat) + 0.05}`;
+          const url = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${userLat}%2C${userLng}&marker=${destinationLat}%2C${destinationLng}`;
+          setMapUrl(url);
+        },
+        () => {
+          // If geolocation fails, show map centered on destination
+          const url = `https://www.openstreetmap.org/export/embed.html?bbox=3.88%2C7.36%2C3.98%2C7.47&layer=mapnik&marker=${destinationLat}%2C${destinationLng}`;
+          setMapUrl(url);
+        },
+        { enableHighAccuracy: true, timeout: 8000 },
+      );
+    } else {
+      // Fallback if geolocation not supported
+      const url = `https://www.openstreetmap.org/export/embed.html?bbox=3.88%2C7.36%2C3.98%2C7.47&layer=mapnik&marker=${destinationLat}%2C${destinationLng}`;
+      setMapUrl(url);
+    }
+  }, []);
+
+  if (!mapUrl) {
+    return (
+      <div className="flex h-[420px] w-full items-center justify-center bg-surface text-surface-foreground">
+        <p>Loading map...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ position: "relative", height: "420px", overflow: "hidden" }}>
+      <iframe
+        title="Directions from your location to Tobest Block Industry"
+        src={mapUrl}
+        width="100%"
+        height="100%"
+        style={{ border: 0, position: "absolute", top: 0, left: 0 }}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: "30px",
+          background: "white",
+          zIndex: 10,
+        }}
+      />
+    </div>
+  );
+}
+
 function EventSection() {
   const destination = "Tobest Block Industry, Bintinlaye, Ajimosin, Ibadan, Nigeria";
   const encodedDestination = encodeURIComponent(destination);
@@ -168,10 +233,8 @@ function EventSection() {
   const fallbackMapUrl = `https://www.openstreetmap.org/search?query=${encodedDestination}`;
 
   function openDirections() {
-    const mapWindow = window.open("about:blank", "_blank", "noopener,noreferrer");
-
     if (!navigator.geolocation) {
-      if (mapWindow) mapWindow.location.href = navigationUrl;
+      window.open(navigationUrl, "_blank", "noopener,noreferrer");
       return;
     }
 
@@ -179,10 +242,10 @@ function EventSection() {
       ({ coords }) => {
         const origin = `${coords.latitude},${coords.longitude}`;
         const liveDirectionsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodedDestination}&travelmode=driving`;
-        if (mapWindow) mapWindow.location.href = liveDirectionsUrl;
+        window.open(liveDirectionsUrl, "_blank", "noopener,noreferrer");
       },
       () => {
-        if (mapWindow) mapWindow.location.href = navigationUrl;
+        window.open(navigationUrl, "_blank", "noopener,noreferrer");
       },
       { enableHighAccuracy: true, timeout: 8000 },
     );
@@ -193,12 +256,18 @@ function EventSection() {
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
           <p className="text-sm font-semibold uppercase text-primary">Event details</p>
-          <h2 className="mt-3 text-balance text-5xl font-semibold">Introduction only, hosted in Ibadan.</h2>
+          <h2 className="mt-3 text-balance text-5xl font-semibold">Introduction, hosted in Ibadan.</h2>
           <dl className="mt-8 grid gap-3 sm:grid-cols-2">
             {eventDetails.map(([label, value]) => (
               <div key={label} className="border border-border bg-card p-5">
                 <dt className="text-sm text-muted-foreground">{label}</dt>
-                <dd className="mt-2 text-xl font-semibold">{value}</dd>
+                <dd className="mt-2 text-xl font-semibold">
+                  {label === "Location" ? (
+                    <span>Bintinlaye, Ajimosin, <strong>Ibadan</strong></span>
+                  ) : (
+                    value
+                  )}
+                </dd>
               </div>
             ))}
           </dl>
@@ -223,21 +292,20 @@ function EventSection() {
             Navigate from my current location
           </button>
           {/* <a className="mt-3 inline-flex w-full items-center justify-center border border-border bg-background px-5 py-3 text-center font-semibold text-foreground transition hover:bg-secondary" href={fallbackMapUrl} target="_blank" rel="noreferrer">
-            Open location without Google
-          </a> */}
+              Open location without Google
+            </a> */}
         </div>
       </div>
       <div className="mx-auto mt-8 max-w-7xl overflow-hidden border border-border bg-card shadow-ceremony">
-        <iframe
-          title="OpenStreetMap location for Bintinlaye, Ajimosin, Ibadan"
-          src={`https://www.openstreetmap.org/export/embed.html?bbox=3.78%2C7.31%2C4.08%2C7.52&layer=mapnik&marker=7.415%2C3.93`}
-          className="h-[420px] w-full"
-          loading="lazy"
-        />
+        <div className="border-b border-border px-5 py-4 sm:px-7">
+          <h3 className="text-lg font-bold">Map</h3>
+        </div>
+        <MapWithDirections destination={destination} />
       </div>
     </section>
   );
 }
+
 
 function GallerySection({ images }: { images: IntroductionImage[] }) {
   // const uploadedGallery = images.filter((image) => image.slot === "gallery");
@@ -276,72 +344,72 @@ function GallerySection({ images }: { images: IntroductionImage[] }) {
   }, []);
 
   return (
-    <section id="gallery" className="px-5 py-20 sm:px-8 lg:px-12">
-  <div className="mx-auto max-w-7xl">
+    <section id="gallery" className="px-5 py-5 sm:px-8 lg:px-12">
+      <div className="mx-auto max-w-7xl">
 
-    {/* Header */}
-    <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-      <div>
-        <p className="text-sm font-semibold uppercase text-primary">
-          Gallery
-        </p>
-        <h2 className="mt-3 text-5xl font-semibold">
-          Ceremony gallery
-        </h2>
-      </div>
+        {/* Header */}
+        <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <p className="text-sm font-semibold uppercase text-primary">
+              Gallery
+            </p>
+            <h2 className="mt-3 text-5xl font-semibold">
+              Ceremony gallery
+            </h2>
+          </div>
 
-      <p className="max-w-md text-muted-foreground">
-        Bride, groom, family, and ceremony images can be placed here in a clean editorial grid.
-      </p>
-    </div>
-
-    {/* CONTENT AREA */}
-    {loading ? (
-      // ✅ PERFECT CENTER LOADER
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="animate-spin text-gold" size={50} />
-          <p className="text-muted-foreground text-sm">
-            Loading collection...
+          <p className="max-w-md text-muted-foreground">
+            Bride, groom, family, and ceremony images can be placed here in a clean editorial grid.
           </p>
         </div>
-      </div>
 
-    ) : products.length === 0 ? (
-      // ✅ EMPTY STATE
-      <div className="flex items-center justify-center min-h-[300px]">
-        <p className="text-muted-foreground text-center">
-          No images available
-        </p>
-      </div>
-
-    ) : (
-      // ✅ SINGLE GRID (no nesting issues)
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-
-        {products.map((product, i) => (
-          <figure
-            key={product._id}
-            className="group relative overflow-hidden rounded-xl border border-border bg-card shadow-sm"
-          >
-            <div className="aspect-[4/3] overflow-hidden">
-              <img
-                src={product.imageURL}
-                alt={product.name || "Gallery image"}
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-              />
+        {/* CONTENT AREA */}
+        {loading ? (
+          // ✅ PERFECT CENTER LOADER
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="flex flex-col items-center gap-4">
+              <Loader2 className="animate-spin text-gold" size={50} />
+              <p className="text-muted-foreground text-sm">
+                Loading collection...
+              </p>
             </div>
+          </div>
 
-            <figcaption className="absolute bottom-3 left-3 bg-background/80 px-3 py-2 text-sm font-medium backdrop-blur-md rounded-md">
-              {String(i + 1).padStart(2, "0")} · {product.name || "Image"}
-            </figcaption>
-          </figure>
-        ))}
+        ) : products.length === 0 ? (
+          // ✅ EMPTY STATE
+          <div className="flex items-center justify-center min-h-[300px]">
+            <p className="text-muted-foreground text-center">
+              No images available
+            </p>
+          </div>
 
+        ) : (
+          // ✅ SINGLE GRID (no nesting issues)
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+
+            {products.map((product, i) => (
+              <figure
+                key={product._id}
+                className="group relative overflow-hidden rounded-xl border border-border bg-card shadow-sm"
+              >
+                <div className="aspect-[5/4] overflow-hidden">
+                  <img
+                    src={product.imageURL}
+                    alt={product.name || "Gallery image"}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                </div>
+
+                <figcaption className="absolute bottom-3 left-3 bg-background/80 px-3 py-2 text-sm font-medium backdrop-blur-md rounded-md">
+                  {String(i + 1).padStart(2, "0")} · {product.name || "Image"}
+                </figcaption>
+              </figure>
+            ))}
+
+          </div>
+        )}
       </div>
-    )}
-  </div>
-</section>
+    </section>
   );
 }
 

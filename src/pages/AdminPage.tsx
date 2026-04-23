@@ -24,7 +24,7 @@ export default function AdminPage() {
             T & R Introduction
           </Link>
           <Link to="/" className="bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90">
-            View landing page
+            View
           </Link>
         </nav>
         {isLoggedIn ? <Dashboard onLogout={() => setIsLoggedIn(false)} /> : <LoginPanel onLogin={() => setIsLoggedIn(true)} />}
