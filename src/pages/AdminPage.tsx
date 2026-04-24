@@ -548,7 +548,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-3 py-8">
 
         <div className="flex items-center justify-between mb-8">
           <h2 className="font-display text-2xl font-bold text-foreground">
