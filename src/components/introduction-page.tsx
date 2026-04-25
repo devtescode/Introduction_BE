@@ -38,71 +38,64 @@ const directionSteps = [
 
 const gallery = ["Family arrival", "Bride portrait", "Groom portrait", "Traditional decor", "Blessing moment", "Guest celebration"];
 
-export function IntroductionPage() {
-  const [images, setImages] = useState<IntroductionImage[]>([]);
+// Fixed Navbar Component
+function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const syncImages = () => setImages(getIntroductionImages());
-    syncImages();
-    window.addEventListener("storage", syncImages);
-    window.addEventListener("introduction-images-updated", syncImages);
-
-    return () => {
-      window.removeEventListener("storage", syncImages);
-      window.removeEventListener("introduction-images-updated", syncImages);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
     };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <main className="min-h-screen overflow-hidden bg-ceremony text-foreground">
-      <HeroSection />
-      <CoupleSection images={images} />
-      <EventSection />
-      <GallerySection images={images} />
-      {/* <ResponseSection /> */}
-    </main>
-  );
-}
-
-function HeroSection() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  return (
-    <section className="relative min-h-[92vh] px-5 py-5 sm:px-8 lg:px-12">
-      <img
-        src={heroImage}
-        alt="Elegant emerald and gold Introduction ceremony decor"
-        width={1600}
-        height={960}
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-veil" />
-      <nav className="relative z-10 mx-auto flex max-w-7xl items-center justify-between border-b border-veil-foreground/20 pb-5 text-veil-foreground">
-        <span className="font-display text-2xl font-semibold tracking-tight">T & R</span>
-        <div className="hidden items-center gap-7 text-sm sm:flex">
-          <a className="transition hover:text-gold" href="#couple">Couple</a>
-          <a className="transition hover:text-gold" href="#event">Event</a>
-          <a className="transition hover:text-gold" href="#location">Location</a>
-          <a className="transition hover:text-gold" href="#gallery">Gallery</a>
-          <Link
-            to="/admin"
-            className="rounded-full border border-veil-foreground/30 bg-background/70 px-4 py-2 text-sm font-semibold transition duration-300 hover:border-gold hover:bg-gold/10 hover:text-gold"
-          >
-            Admin
-          </Link>
-        </div>
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="sm:hidden flex h-11 w-11 items-center justify-center rounded-full border border-veil-foreground/30 bg-background/80 text-veil-foreground shadow-sm transition hover:border-gold hover:text-gold"
-          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 mx-auto flex max-w-7xl items-center justify-between px-5 py-4 transition-all duration-300 sm:px-8 lg:px-12 ${
+        scrolled
+          ? "border-b border-veil-foreground/20 bg-veil/95 py-3 shadow-lg backdrop-blur-md"
+          : "border-b border-transparent bg-transparent"
+      }`}
+    >
+      <span className={`font-display text-2xl font-semibold tracking-tight transition-all duration-300 ${scrolled ? "text-veil-foreground" : "text-white"}`}>
+        T & R
+      </span>
+      <div className="hidden items-center gap-7 text-sm sm:flex">
+        <a className="text-white transition hover:text-gold" href="#couple">
+          Couple
+        </a>
+        <a className="text-white transition hover:text-gold" href="#event">
+          Event
+        </a>
+        <a className="text-white transition hover:text-gold" href="#location">
+          Location
+        </a>
+        <a className="text-white transition hover:text-gold" href="#gallery">
+          Gallery
+        </a>
+        <Link
+          to="/admin"
+          className="rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition duration-300 hover:border-gold hover:bg-gold/10 hover:text-gold"
         >
-          <span className={`block h-0.5 w-6 bg-veil-foreground transition-all duration-300 ${mobileMenuOpen ? "rotate-45 translate-y-1.5" : ""}`}></span>
-          <span className={`block h-0.5 w-6 bg-veil-foreground transition-all duration-300 ${mobileMenuOpen ? "opacity-0" : ""}`}></span>
-          <span className={`block h-0.5 w-6 bg-veil-foreground transition-all duration-300 ${mobileMenuOpen ? "-rotate-45 -translate-y-1.5" : ""}`}></span>
-        </button>
-      </nav>
+          Admin
+        </Link>
+      </div>
+      <button
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        className="sm:hidden flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white shadow-sm transition hover:border-gold hover:text-gold"
+        aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+      >
+        <span className={`block h-0.5 w-6 bg-current transition-all duration-300 ${mobileMenuOpen ? "rotate-45 translate-y-1.5" : ""}`}></span>
+        <span className={`block h-0.5 w-6 bg-current transition-all duration-300 ${mobileMenuOpen ? "opacity-0" : ""}`}></span>
+        <span className={`block h-0.5 w-6 bg-current transition-all duration-300 ${mobileMenuOpen ? "-rotate-45 -translate-y-1.5" : ""}`}></span>
+      </button>
+      {/* Mobile Menu */}
       <div
-        className={`sm:hidden absolute top-20 right-5 z-20 w-[min(92vw,18rem)] rounded-[28px] border border-veil-foreground/20 bg-background/95 p-4 shadow-2xl shadow-black/20 backdrop-blur-xl transition-all duration-300 ease-out ${mobileMenuOpen ? "opacity-100 scale-100 visible" : "pointer-events-none opacity-0 scale-95 invisible"}`}
+        className={`sm:hidden absolute top-16 right-5 z-20 w-[min(92vw,18rem)] rounded-[28px] border border-veil-foreground/20 bg-background/95 p-4 shadow-2xl shadow-black/20 backdrop-blur-xl transition-all duration-300 ease-out ${
+          mobileMenuOpen ? "opacity-100 scale-100 visible" : "pointer-events-none opacity-0 scale-95 invisible"
+        }`}
       >
         <p className="mb-3 text-xs uppercase tracking-[0.28em] text-muted-foreground">Jump to</p>
         <a
@@ -141,6 +134,48 @@ function HeroSection() {
           Admin
         </Link>
       </div>
+    </nav>
+  );
+}
+
+export function IntroductionPage() {
+  const [images, setImages] = useState<IntroductionImage[]>([]);
+
+  useEffect(() => {
+    const syncImages = () => setImages(getIntroductionImages());
+    syncImages();
+    window.addEventListener("storage", syncImages);
+    window.addEventListener("introduction-images-updated", syncImages);
+
+    return () => {
+      window.removeEventListener("storage", syncImages);
+      window.removeEventListener("introduction-images-updated", syncImages);
+    };
+  }, []);
+
+  return (
+    <main className="min-h-screen overflow-hidden bg-ceremony text-foreground">
+      <Navbar />
+      <HeroSection />
+      <CoupleSection images={images} />
+      <EventSection />
+      <GallerySection images={images} />
+      {/* <ResponseSection /> */}
+    </main>
+  );
+}
+
+function HeroSection() {
+  return (
+    <section className="relative min-h-[92vh] px-5 py-5 sm:px-8 lg:px-12 pt-20">
+      <img
+        src={heroImage}
+        alt="Elegant emerald and gold Introduction ceremony decor"
+        width={1600}
+        height={960}
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+      <div className="absolute inset-0 bg-veil" />
       <div className="relative z-10 mx-auto flex min-h-[76vh] max-w-7xl items-end pb-8 pt-20 text-veil-foreground">
         <div className="max-w-5xl">
           <p className="mb-4 inline-flex border border-veil-foreground/20 px-4 py-2 text-sm uppercase tracking-normal text-white">
