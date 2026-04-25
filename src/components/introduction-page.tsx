@@ -53,7 +53,7 @@ function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 mx-auto flex max-w-7xl items-center justify-between px-5 py-4 transition-all duration-300 sm:px-8 lg:px-12 ${
+      className={`fixed top-0 left-0 right-0 z-50 flex w-full items-center justify-between px-5 py-4 transition-all duration-300 sm:px-8 lg:px-12 ${
         scrolled
           ? "border-b border-veil-foreground/20 bg-veil/95 py-3 shadow-lg backdrop-blur-md"
           : "border-b border-transparent bg-transparent"
